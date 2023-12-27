@@ -14,6 +14,8 @@ namespace Neural_net
         protected int hiddenLayersCount;
         protected int neuralsInHiddenLayersAmount;
         protected int size;
+        protected int generationsPassed;
+        protected double errorChange;
         protected double learningFactor;
         protected RoundType inpRoundType;
         protected RoundType neuralRoundType;
@@ -25,6 +27,8 @@ namespace Neural_net
         public int HiddenLayersCount => hiddenLayersCount;
         public int NeuralsInHiddenLayersAmount => neuralsInHiddenLayersAmount;
         public int Size => size;
+        public int GenerationsPassed => generationsPassed;
+        public double ErrorChange => errorChange;
         public LearningDatabase LearningDatabase => learningDatabase;
         public double LearningFactor => learningFactor;
         public RoundType InputsRound
@@ -117,6 +121,7 @@ namespace Neural_net
         }
         public async Task PassOneGeneration()
         {
+            var cur_error = currentError;
             var best_nn = await BestNN();
             // Setting other NNs by the best NN
             foreach (var neuralNet in generation)
@@ -124,7 +129,11 @@ namespace Neural_net
                 if (neuralNet == best_nn) continue;
                 await neuralNet.SetBy(best_nn, learningFactor);
             }
+            errorChange = cur_error - currentError;
+            generationsPassed++;
         }
+        public void IncreaseLearningFactor() => learningFactor *= 10;
+        public void ReduceLearningFactor() => learningFactor /= 10;
     }
     internal class LearningDatabase
     {

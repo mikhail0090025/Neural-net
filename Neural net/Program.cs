@@ -16,7 +16,7 @@ namespace Neural_net
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new StartForm());
+            Application.Run(new MainWindow());
         }
     }
 }
