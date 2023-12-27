@@ -1,0 +1,11 @@
+D:\misha\github\Neural-net\Neural net\bin\Debug\Neural net.exe.config
+D:\misha\github\Neural-net\Neural net\bin\Debug\Neural net.exe
+D:\misha\github\Neural-net\Neural net\bin\Debug\Neural net.pdb
+D:\misha\github\Neural-net\Neural net\obj\Debug\Neural net.csproj.AssemblyReference.cache
+D:\misha\github\Neural-net\Neural net\obj\Debug\Neural_net.StartForm.resources
+D:\misha\github\Neural-net\Neural net\obj\Debug\Neural_net.MainWindow.resources
+D:\misha\github\Neural-net\Neural net\obj\Debug\Neural_net.Properties.Resources.resources
+D:\misha\github\Neural-net\Neural net\obj\Debug\Neural net.csproj.GenerateResource.cache
+D:\misha\github\Neural-net\Neural net\obj\Debug\Neural net.csproj.CoreCompileInputs.cache
+D:\misha\github\Neural-net\Neural net\obj\Debug\Neural net.exe
+D:\misha\github\Neural-net\Neural net\obj\Debug\Neural net.pdb

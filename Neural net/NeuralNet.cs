@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Neural_net
 {
-    public enum RoundType { DontRound, Tanh, NeroAndOne }
+    public enum RoundType { DontRound, Tanh, ZeroAndOne }
     internal class NeuralNet
     {
         protected Layer inputs;
@@ -24,7 +24,8 @@ namespace Neural_net
             inputRoundType = inputsRound;
             neuralRoundType = neuralRound;
             outputRoundType = outputRound;
-            HiddenLayers = new List<Layer>(HiddenLayersAmount);
+            HiddenLayers = new List<Layer>();
+            for (int i = 0; i < HiddenLayersAmount; i++) HiddenLayers.Add(null);
             // Outputs initialization
             var outputs_ = new List<Neural>();
             for (int i = 0; i < OutputsAmount; i++)
@@ -66,11 +67,11 @@ namespace Neural_net
                 inputs.Neurals[i].SetValue(inputs_[i]);
                 inputs.Neurals[i].Round(inputRoundType);
             }
+            inputs.SetNextLayer();
             // Hidden neural layers counting
             for (int i = 0; i < HiddenLayers.Count; i++)
             {
                 HiddenLayers[i].Round(neuralRoundType);
-                HiddenLayers[i].NextLayer.Reset();
                 HiddenLayers[i].SetNextLayer();
             }
             // Outputs round
@@ -86,9 +87,55 @@ namespace Neural_net
             }
             return result;
         }
-        public async Task SetBy(NeuralNet NN)
+        private static Random random = new Random();
+        public async Task SetBy(NeuralNet NN, double ChangeFactor)
         {
-            throw new NotImplementedException();
+            double newRandomValue() => ((random.NextDouble() * 2f) - 1f) * ChangeFactor;
+            await Task.Run(() =>
+            {
+                // Inputs connections setting
+                for (int i = 0; i < inputs.Connection.CurrentLayerSize; i++)
+                {
+                    for (int j = 0; j < inputs.Connection.NextLayerSize; j++)
+                    {
+                        inputs.Connection.SetConnection(i, j, NN.Inputs.Connection.GetConnection(i, j) + newRandomValue());
+                    }
+                }
+                for (int i = 0; i < HiddenLayers.Count; i++)
+                {
+                    for (int j = 0; j < HiddenLayers[i].Connection.CurrentLayerSize; j++)
+                    {
+                        for (int k = 0; k < HiddenLayers[i].Connection.NextLayerSize; k++)
+                        {
+                            var num = NN.HiddenLayers[i].Connection.GetConnection(i, k) + newRandomValue();
+                            HiddenLayers[i].Connection.SetConnection(j, k, num);
+                        }
+                    }
+                }
+            });
+        }
+        public void ShowAll()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("Inputs: ");
+            foreach (var item in inputs.Neurals)
+            {
+                stringBuilder.Append($"{item.Value}, ");
+            }
+            stringBuilder.Append("Neurals: ");
+            foreach (var layer in HiddenLayers)
+            {
+                foreach (var item in layer.Neurals)
+                {
+                    stringBuilder.Append($"{item.Value}, ");
+                }
+            }
+            stringBuilder.Append("Outputs: ");
+            foreach (var item in outputs.Neurals)
+            {
+                stringBuilder.Append($"{item.Value}, ");
+            }
+            MessageBox.Show(stringBuilder.ToString());
         }
     }
     internal class Neural
@@ -107,7 +154,7 @@ namespace Neural_net
                 case RoundType.Tanh:
                     value = Math.Tanh(value);
                     break;
-                case RoundType.NeroAndOne:
+                case RoundType.ZeroAndOne:
                     value = value > 0 ? 1 : 0;
                     break;
                     default: throw new Exception("Type is undefined");
@@ -170,13 +217,15 @@ namespace Neural_net
         protected List<List<double>> connections;
         protected Layer CurrentLayer;
         protected Layer NextLayer;
+        public int CurrentLayerSize => CurrentLayer.Size;
+        public int NextLayerSize => NextLayer.Size;
         // New connection
+        private static Random random = new Random();
         public Connection(Layer currentLayer, Layer nextLayer)
         {
             CurrentLayer = currentLayer;
             NextLayer = nextLayer;
             connections = new List<List<double>>();
-            Random random = new Random();
             double RandomConnection() => (random.NextDouble() * 2) - 1f;
             for (int i = 0; i < currentLayer.Size; i++)
             {

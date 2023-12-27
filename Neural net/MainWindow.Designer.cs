@@ -1,6 +1,6 @@
 ﻿namespace Neural_net
 {
-    partial class StartForm
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -28,22 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.btn_pass_one_gn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // StartForm
+            // btn_pass_one_gn
+            // 
+            this.btn_pass_one_gn.Location = new System.Drawing.Point(13, 13);
+            this.btn_pass_one_gn.Name = "btn_pass_one_gn";
+            this.btn_pass_one_gn.Size = new System.Drawing.Size(117, 23);
+            this.btn_pass_one_gn.TabIndex = 0;
+            this.btn_pass_one_gn.Text = "Pass one generation";
+            this.btn_pass_one_gn.UseVisualStyleBackColor = true;
+            this.btn_pass_one_gn.Click += new System.EventHandler(this.btn_pass_one_gn_Click);
+            // 
+            // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Name = "StartForm";
+            this.ClientSize = new System.Drawing.Size(884, 561);
+            this.Controls.Add(this.btn_pass_one_gn);
+            this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Neural net";
-            this.Load += new System.EventHandler(this.StartForm_Load);
+            this.Text = "Main window";
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Button btn_pass_one_gn;
     }
 }
-

@@ -14,16 +14,19 @@ namespace Neural_net
         protected int hiddenLayersCount;
         protected int neuralsInHiddenLayersAmount;
         protected int size;
+        protected double learningFactor;
         protected RoundType inpRoundType;
         protected RoundType neuralRoundType;
         protected RoundType outpRoundType;
         protected LearningDatabase learningDatabase;
+        public List<NeuralNet> AllNNs => generation;
         public int InputsCount => inputsCount;
         public int OutputsCount => outputsCount;
         public int HiddenLayersCount => hiddenLayersCount;
         public int NeuralsInHiddenLayersAmount => neuralsInHiddenLayersAmount;
         public int Size => size;
         public LearningDatabase LearningDatabase => learningDatabase;
+        public double LearningFactor => learningFactor;
         public RoundType InputsRound
         {
             get => inpRoundType;
@@ -52,7 +55,7 @@ namespace Neural_net
             }
         }
         public Generation(int inpCount, int outpCount, int hiddenLayersCount_, int neuralsInHiddenLayerCount, int genSize, RoundType inputs_round,
-            RoundType neurals_round, RoundType output_round)
+            RoundType neurals_round, RoundType output_round, double learning_factor)
         {
             inpRoundType = inputs_round;
             neuralRoundType = neurals_round;
@@ -63,6 +66,7 @@ namespace Neural_net
             neuralsInHiddenLayersAmount = neuralsInHiddenLayerCount;
             generation = new List<NeuralNet>();
             size = genSize;
+            learningFactor = learning_factor;
             for (int i = 0; i < genSize; i++)
             {
                 generation.Add(new NeuralNet(inpCount, outpCount, hiddenLayersCount_, neuralsInHiddenLayerCount, inputs_round, neurals_round, output_round));
@@ -74,8 +78,11 @@ namespace Neural_net
             if (database.OutputsCount != this.OutputsCount) throw new Exception("Given database is invalid, because counts of outputs are different");
             learningDatabase = database;
         }
+        protected double currentError;
+        public double CurrentError => currentError;
         public async Task<NeuralNet> BestNN()
         {
+            if (learningDatabase == null) throw new Exception("Database is not set!!!");
             // Counting errors of neural nets
             List<double> Errors = new List<double>();
             // Heavy operation (counting NNs errors)
@@ -105,6 +112,7 @@ namespace Neural_net
                 }
             }*/
             index = Errors.IndexOf(Errors.Min());
+            currentError = Errors[index];
             return generation[index];
         }
         public async Task PassOneGeneration()
@@ -114,7 +122,7 @@ namespace Neural_net
             foreach (var neuralNet in generation)
             {
                 if (neuralNet == best_nn) continue;
-                await neuralNet.SetBy(neuralNet);
+                await neuralNet.SetBy(neuralNet, learningFactor);
             }
         }
     }
