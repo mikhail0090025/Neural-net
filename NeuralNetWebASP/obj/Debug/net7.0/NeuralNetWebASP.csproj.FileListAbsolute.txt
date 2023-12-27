@@ -1,0 +1,7 @@
+D:\misha\github\Neural-net\NeuralNetWebASP\obj\Debug\net7.0\NeuralNetWebASP.GeneratedMSBuildEditorConfig.editorconfig
+D:\misha\github\Neural-net\NeuralNetWebASP\obj\Debug\net7.0\NeuralNetWebASP.AssemblyInfoInputs.cache
+D:\misha\github\Neural-net\NeuralNetWebASP\obj\Debug\net7.0\NeuralNetWebASP.AssemblyInfo.cs
+D:\misha\github\Neural-net\NeuralNetWebASP\obj\Debug\net7.0\NeuralNetWebASP.csproj.CoreCompileInputs.cache
+D:\misha\github\Neural-net\NeuralNetWebASP\obj\Debug\net7.0\NeuralNetWebASP.MvcApplicationPartsAssemblyInfo.cache
+D:\misha\github\Neural-net\NeuralNetWebASP\obj\Debug\net7.0\NeuralNetWebASP.RazorAssemblyInfo.cache
+D:\misha\github\Neural-net\NeuralNetWebASP\obj\Debug\net7.0\NeuralNetWebASP.RazorAssemblyInfo.cs
