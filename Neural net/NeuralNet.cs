@@ -4,17 +4,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Neural_net
 {
+    public enum RoundType { DontRound, Tanh, NeroAndOne }
     internal class NeuralNet
     {
         protected Layer inputs;
         protected Layer outputs;
         public Layer Outputs => outputs;
         protected List<Layer> HiddenLayers;
-        public NeuralNet(int InputsAmount, int OutputsAmount, int HiddenLayersAmount, int NeuralsInHiddenLayerAmount)
+        protected RoundType inputRoundType;
+        protected RoundType neuralRoundType;
+        protected RoundType outputRoundType;
+        public NeuralNet(int InputsAmount, int OutputsAmount, int HiddenLayersAmount, int NeuralsInHiddenLayerAmount, RoundType inputsRound, RoundType neuralRound, RoundType outputRound)
         {
+            inputRoundType = inputsRound;
+            neuralRoundType = neuralRound;
+            outputRoundType = outputRound;
             HiddenLayers = new List<Layer>(HiddenLayersAmount);
             // Outputs initialization
             var outputs_ = new List<Neural>();
@@ -48,14 +56,57 @@ namespace Neural_net
             }
             inputs = new Layer(HiddenLayers[0], inputs_);
         }
+        public List<double> CalcOutputs(List<double> inputs_)
+        {
+            if (inputs_.Count != inputs.Size) throw new Exception("Count of transmitted inputs is not equal to count inputs in neural net");
+            // Inputs getting
+            for (int i = 0; i < inputs_.Count; i++)
+            {
+                inputs.Neurals[i].SetValue(inputs_[i]);
+                inputs.Neurals[i].Round(inputRoundType);
+            }
+            // Hidden neural layers counting
+            for (int i = 0; i < HiddenLayers.Count; i++)
+            {
+                HiddenLayers[i].Round(neuralRoundType);
+                HiddenLayers[i].NextLayer.Reset();
+                HiddenLayers[i].SetNextLayer();
+            }
+            // Outputs round
+            foreach (var item in outputs.Neurals)
+            {
+                item.Round(outputRoundType);
+            }
+            // Getting numbers
+            List<double> result = new List<double>();
+            for (int i = 0; i < outputs.Neurals.Count; i++)
+            {
+                result.Add(outputs.Neurals[i].Value);
+            }
+            return result;
+        }
     }
     internal class Neural
     {
         protected double value;
         public double Value => value;
-        protected void SetValue(double v)
+        public void SetValue(double v)
         {
             value = v;
+        }
+        public void Round(RoundType RoundType_)
+        {
+            switch (RoundType_)
+            {
+                case RoundType.DontRound: break;
+                case RoundType.Tanh:
+                    value = Math.Tanh(value);
+                    break;
+                case RoundType.NeroAndOne:
+                    value = value > 0 ? 1 : 0;
+                    break;
+                    default: throw new Exception("Type is undefined");
+            }
         }
         public void Reset() => value = 0;
         public Neural()
@@ -89,6 +140,25 @@ namespace Neural_net
                 neural.Reset();
             }
         }
+        public void Round(RoundType roundType)
+        {
+            foreach (var item in neurals)
+            {
+                item.Round(roundType);
+            }
+        }
+        public void SetNextLayer()
+        {
+            NextLayer.Reset();
+            for (int i = 0; i < neurals.Count; i++)
+            {
+                for (int j = 0; j < NextLayer.neurals.Count; j++)
+                {
+                    var n = NextLayer.neurals[j];
+                    n.SetValue(n.Value + (neurals[i].Value * Connection.GetConnection(i, j)));
+                }
+            }
+        }
     }
     internal class Connection
     {
@@ -113,5 +183,6 @@ namespace Neural_net
                 connections.Add(line);
             }
         }
+        public double GetConnection(int indexInCurrentLayer, int indexInNextLayer) => connections[indexInCurrentLayer][indexInNextLayer];
     }
 }
