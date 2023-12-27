@@ -14,6 +14,7 @@ namespace Neural_net
         protected Layer inputs;
         protected Layer outputs;
         public Layer Outputs => outputs;
+        public Layer Inputs => inputs;
         protected List<Layer> HiddenLayers;
         public RoundType inputRoundType;
         public RoundType neuralRoundType;
@@ -85,6 +86,10 @@ namespace Neural_net
             }
             return result;
         }
+        public async Task SetBy(NeuralNet NN)
+        {
+            throw new NotImplementedException();
+        }
     }
     internal class Neural
     {
@@ -123,7 +128,7 @@ namespace Neural_net
         protected List<Neural> neurals;
         public List<Neural> Neurals => neurals;
         public Layer NextLayer;
-        protected Connection Connection;
+        public Connection Connection;
         public int Size => neurals.Count;
         public Layer(Layer next_layer, List<Neural> neurals_)
         {
@@ -184,5 +189,6 @@ namespace Neural_net
             }
         }
         public double GetConnection(int indexInCurrentLayer, int indexInNextLayer) => connections[indexInCurrentLayer][indexInNextLayer];
+        public double SetConnection(int indexInCurrentLayer, int indexInNextLayer, double value) => connections[indexInCurrentLayer][indexInNextLayer] = value;
     }
 }

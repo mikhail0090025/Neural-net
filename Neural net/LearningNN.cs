@@ -78,15 +78,43 @@ namespace Neural_net
         {
             // Counting errors of neural nets
             List<double> Errors = new List<double>();
-            for (int i = 0; i < generation.Count; i++)
+            // Heavy operation (counting NNs errors)
+            await Task.Run(() =>
             {
-                double error_this_nn = 0;
-                for (int j = 0; j < learningDatabase.Size; j++)
+                for (int i = 0; i < generation.Count; i++)
                 {
-                    var gotten_data = generation[i].CalcOutputs(learningDatabase.TestInputs[j]);
-                    for (int k = 0; k < gotten_data.Count; k++) error_this_nn += Math.Abs(gotten_data[k] - learningDatabase.ExpectedOutputs[j][k]);
+                    // Testing each neural net
+                    double error_this_nn = 0;
+                    for (int j = 0; j < learningDatabase.Size; j++)
+                    {
+                        var gotten_data = generation[i].CalcOutputs(learningDatabase.TestInputs[j]);
+                        for (int k = 0; k < gotten_data.Count; k++) error_this_nn += Math.Abs(gotten_data[k] - learningDatabase.ExpectedOutputs[j][k]);
+                    }
+                    Errors.Add(error_this_nn);
                 }
-                Errors.Add(error_this_nn);
+            });
+            // Getting the best NN
+            int index = 0;
+            /*double the_smallest_error = double.MaxValue;
+            for (int i = 0; i < Errors.Count; i++)
+            {
+                if (Errors[i] < the_smallest_error)
+                {
+                    the_smallest_error = Errors[i];
+                    index = i;
+                }
+            }*/
+            index = Errors.IndexOf(Errors.Min());
+            return generation[index];
+        }
+        public async Task PassOneGeneration()
+        {
+            var best_nn = await BestNN();
+            // Setting other NNs by the best NN
+            foreach (var neuralNet in generation)
+            {
+                if (neuralNet == best_nn) continue;
+                await neuralNet.SetBy(neuralNet);
             }
         }
     }
