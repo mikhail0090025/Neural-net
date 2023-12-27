@@ -122,7 +122,7 @@ namespace Neural_net
             foreach (var neuralNet in generation)
             {
                 if (neuralNet == best_nn) continue;
-                await neuralNet.SetBy(neuralNet, learningFactor);
+                await neuralNet.SetBy(best_nn, learningFactor);
             }
         }
     }

@@ -90,7 +90,7 @@ namespace Neural_net
         private static Random random = new Random();
         public async Task SetBy(NeuralNet NN, double ChangeFactor)
         {
-            double newRandomValue() => ((random.NextDouble() * 2f) - 1f) * ChangeFactor;
+            double newRandomValue() => ((random.NextDouble() * 2) - 1) * ChangeFactor;
             await Task.Run(() =>
             {
                 // Inputs connections setting
@@ -107,7 +107,7 @@ namespace Neural_net
                     {
                         for (int k = 0; k < HiddenLayers[i].Connection.NextLayerSize; k++)
                         {
-                            var num = NN.HiddenLayers[i].Connection.GetConnection(i, k) + newRandomValue();
+                            var num = NN.HiddenLayers[i].Connection.GetConnection(j, k) + newRandomValue();
                             HiddenLayers[i].Connection.SetConnection(j, k, num);
                         }
                     }
@@ -236,6 +236,15 @@ namespace Neural_net
                 }
                 connections.Add(line);
             }
+        }
+        public override string ToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var item in connections)
+            {
+                stringBuilder.Append(string.Join(", ", item) + "\n");
+            }
+            return stringBuilder.ToString();
         }
         public double GetConnection(int indexInCurrentLayer, int indexInNextLayer) => connections[indexInCurrentLayer][indexInNextLayer];
         public double SetConnection(int indexInCurrentLayer, int indexInNextLayer, double value) => connections[indexInCurrentLayer][indexInNextLayer] = value;
