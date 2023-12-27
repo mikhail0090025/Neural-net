@@ -15,9 +15,9 @@ namespace Neural_net
         protected Layer outputs;
         public Layer Outputs => outputs;
         protected List<Layer> HiddenLayers;
-        protected RoundType inputRoundType;
-        protected RoundType neuralRoundType;
-        protected RoundType outputRoundType;
+        public RoundType inputRoundType;
+        public RoundType neuralRoundType;
+        public RoundType outputRoundType;
         public NeuralNet(int InputsAmount, int OutputsAmount, int HiddenLayersAmount, int NeuralsInHiddenLayerAmount, RoundType inputsRound, RoundType neuralRound, RoundType outputRound)
         {
             inputRoundType = inputsRound;
