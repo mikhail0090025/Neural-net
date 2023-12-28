@@ -29,11 +29,10 @@ namespace NeuralNetWebASP.Controllers
             Logger.LogInformation("Creating new generation started!");
 			try
 			{
-                parameters.learning_factor = 1 / parameters.learning_factor;
+                parameters.learning_factor = Math.Pow(parameters.learning_factor, -1);
                 Generation = new Generation(parameters.inputs_count, parameters.outputs_count, parameters.hidden_layers_count, parameters.neurals_in_hidden_layer_count, parameters.gen_size, (RoundType)parameters.inp_round, (RoundType)parameters.neu_round, (RoundType)parameters.out_round, parameters.learning_factor);
                 LearningDatabase = new LearningDatabase(parameters.inputs_count, parameters.outputs_count);
                 Generation.SetDatabase(LearningDatabase);
-                Logger.LogInformation("I am here");
 			}
             catch(Exception ex)
             {
@@ -48,7 +47,7 @@ namespace NeuralNetWebASP.Controllers
             dynamic gotten_data = data;
             return Json(gotten_data);
         }
-        private GenerationParameters GenParams()
+        private GenerationParameters GenerationParameters()
         {
             if(Generation == null)
             {
@@ -69,26 +68,24 @@ namespace NeuralNetWebASP.Controllers
 		[HttpGet("GetData")]
         public IActionResult GetGenerationData()
         {
-            return Json(GenParams());
+            return Json(GenerationParameters());
         }
         [HttpGet("GetAddingToDBview")]
         public IActionResult GetAddingToDBview()
         {
-            Logger.LogInformation("Request to 'GetAddingToDBview' has come!");
             if (Generation == null)
             {
-                Logger.LogInformation("111");
-                return BadRequest("Generation was not created!");
+                return BadRequest("<p style='color: red;'><b>Generation was not created! Create it firstly.</b></p>");
             }
-			var parameters = GenParams();
-			Logger.LogInformation("111");
+			var parameters = GenerationParameters();
+            Logger.LogInformation($"Parameters are null: {parameters == null}");
             return View("AddToDBView", parameters);
         }
         [HttpGet("generationinjson")]
         public IActionResult GenerationInJson()
         {
             //return Json(Generation);
-            return Json(new { gen = Generation, isnull = (Generation == null)});
+            return Json(new { gen = Generation });
         }
 	}
 }

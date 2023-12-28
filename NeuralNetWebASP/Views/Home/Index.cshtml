@@ -43,6 +43,7 @@
  *@  
     <button id="addElementButton" onclick="ShowViewNewElementToDB()">Add new element to database</button>
     <button onclick="GetGenerationJSON()">Get generation in JSON</button>
+    <button onclick="GetDataInJSON()">Get data about generation (JSON)</button>
     <div id="AddElementToDatabase"></div>
     <script>
         function GetGenerationJSON() {
@@ -59,12 +60,17 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById("AddElementToDatabase").innerHTML = data;
-                    alert(data);
                 })
                 .catch(error => {
                     document.getElementById("AddElementToDatabase").innerHTML = `<p style='color: red;'>Error: ${error}</p>`;
                     alert("Error: " + error);
                 });
+        }
+        function GetDataInJSON() {
+            fetch(`api/neuralnets/getdata`)
+            .then(response => response.text())
+                .then(data => { console.log(data); alert(data); })
+                .catch(error => { alert(error); })
         }
     </script>
 </div>

@@ -1,26 +1,42 @@
-﻿@page
-@model NeuralNetWebASP.Models.GenerationParameters
+﻿@model NeuralNetWebASP.Models.GenerationParameters
+@{
+	Layout = null;
+}
 <h2>New element</h2>
 <form method="post" id="myForm">
-	@try{
-		@for (int i = 0; i < Model.inputs_count; i++)
+	@{
+		if (Model == null)
 		{
-			<label>Input @i + 1:</label>
-			<input type="number" name="input_@i" />
-			<br />
+			<p style="color: red;">Model is null</p>
+			return;
 		}
-		@for (int i = 0; i < Model.outputs_count; i++)
+		try
 		{
-			<label>Output @i + 1:</label>
-			<input type="number" name="output_@i" onclick="submit()" />
-			<br />
+			<div class="form_half">
+			<center><h2>Inputs</h2></center>
+				@for (int i = 0; i < Model.inputs_count; i++)
+				{
+					<label>Input @(i + 1):</label>
+					<input type="number" name="input_@i" />
+					<br />
+				}
+			</div>
+			<div class="form_half">
+			<center><h2>Outputs</h2></center>
+				@for (int i = 0; i < Model.outputs_count; i++)
+				{
+					<label>Output @(i + 1):</label>
+					<input type="number" name="output_@i" />
+					<br />
+				}
+			</div>
+		}
+		catch (Exception ex)
+		{
+			<p>Error: @ex.Message</p>
 		}
 	}
-	catch(Exception ex)
-	{
-		<p>Error: @ex.Message</p>
-	}
-	<input type="button" />
+	<center><input type="button" onclick="submit()" value="Add" /></center>
 </form>
 <script>
 	function submit() {
