@@ -4,32 +4,36 @@
 
 <div class="text-center">
     <h1>Neural net manager</h1>
-    <div class="display-5 new-NN">
+    <div class="new-NN">
         <form action="api/neuralnets/newgeneration" method="post" id="CreateNNform">
-            <p>Inputs count: </p> <input type="number" name="inputs_count" value="4"/><br />
-            <p>Outputs count: </p> <input type="number" name="outputs_count" value="2"/><br />
-            <p>Hidden layers count: </p> <input type="number" name="hidden_layers_count" value="4"/><br />
-            <p>Neurals in hidden layer count: </p> <input type="number" name="neurals_in_hidden_layer_count" value="5"/><br />
-            <p>Generation size: </p> <input type="number" name="gen_size" value="50"/><br />
-            <p>Learning factor: </p> <input type="number" name="learning_factor" value="100"/><br />
-            <p>Inputs round: </p>
-            <select name="inp_round">
-                <option value="DontRound">Don't round</option>
-                <option value="Tanh" selected>Tanh</option>
-                <option value="ZeroAndOne">Convert to Zero/One (Opened/Closed)</option>
-            </select>
-            <p>Neurals round: </p>
-            <select name="neu_round">
-                <option value="DontRound">Don't round</option>
-                <option value="Tanh">Tanh</option>
-                <option value="ZeroAndOne" selected>Convert to Zero/One (Opened/Closed)</option>
-            </select>
-            <p>Outputs round: </p>
-            <select name="out_round">
-                <option value="DontRound" selected>Don't round</option>
-                <option value="Tanh">Tanh</option>
-                <option value="ZeroAndOne">Convert to Zero/One (Opened/Closed)</option>
-            </select>
+            <div class="form_half">
+                <p>Inputs count: </p> <input type="number" name="inputs_count" value="4" /><br />
+                <p>Outputs count: </p> <input type="number" name="outputs_count" value="2" /><br />
+                <p>Hidden layers count: </p> <input type="number" name="hidden_layers_count" value="4" /><br />
+                <p>Neurals in hidden layer count: </p> <input type="number" name="neurals_in_hidden_layer_count" value="5" /><br />
+                <p>Generation size: </p> <input type="number" name="gen_size" value="50" /><br />
+            </div>
+            <div class="form_half">
+                <p>Learning factor: </p> <input type="number" name="learning_factor" value="100" /><br />
+                <p>Inputs round: </p>
+                <select name="inp_round">
+                    <option value="DontRound">Don't round</option>
+                    <option value="Tanh" selected>Tanh</option>
+                    <option value="ZeroAndOne">Convert to Zero/One (Opened/Closed)</option>
+                </select>
+                <p>Neurals round: </p>
+                <select name="neu_round">
+                    <option value="DontRound">Don't round</option>
+                    <option value="Tanh">Tanh</option>
+                    <option value="ZeroAndOne" selected>Convert to Zero/One (Opened/Closed)</option>
+                </select>
+                <p>Outputs round: </p>
+                <select name="out_round">
+                    <option value="DontRound" selected>Don't round</option>
+                    <option value="Tanh">Tanh</option>
+                    <option value="ZeroAndOne">Convert to Zero/One (Opened/Closed)</option>
+                </select>
+            </div>
             <input type="submit" />
         </form>
     </div>
@@ -38,25 +42,43 @@
     </button>
  *@  
     <button id="addElementButton" onclick="ShowViewNewElementToDB()">Add new element to database</button>
+    <button onclick="GetGenerationJSON()">Get generation in JSON</button>
     <div id="AddElementToDatabase"></div>
     <script>
-        document.getElementById("CreateNNform").addEventListener("submit", function (event) {
+        function GetGenerationJSON() {
+            fetch(`api/neuralnets/generationinjson`)
+                .then(response => response.text())
+                .then(data => { alert(data);})
+                .catch(error => { alert(`Error: ${error}`) });
+        }
+        /*document.getElementById("CreateNNform").addEventListener("submit", function (event) {
             event.preventDefault();
-        });
+        });*/
         function ShowViewNewElementToDB() {
-            var xhr = new XMLHttpRequest();
-            //xhr.open('GET', 'api/neuralnets/getaddingtodbview', true);
-            xhr.open('GET', 'api/NeuralNets/GetAddingToDBview', true);
-            //xhr.open('GET', 'api/NeuralNetsController/GetAddingToDBview', true); Error 404
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    document.getElementById("AddElementToDatabase").innerHTML = xhr.responseText;
-                }
-                else {
-                    alert(`Error: ${xhr.status}`);
-                }
-            }
-            xhr.send();
+            fetch(`api/neuralnets/getaddingtodbview`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("AddElementToDatabase").innerHTML = data;
+                    alert(data);
+                })
+                .catch(error => {
+                    document.getElementById("AddElementToDatabase").innerHTML = `<p style='color: red;'>Error: ${error}</p>`;
+                    alert("Error: " + error);
+                });
         }
     </script>
 </div>
+<style>
+    .form_half {
+        width: 45%;
+        display: inline-block;
+        border: 2px solid black;
+        margin: 20px;
+        padding: 20px;
+        height: 100%;
+        vertical-align: top;
+        background: #FEFE99;
+        font-family: Consolas;
+        font-size: 20px;
+    }
+</style>

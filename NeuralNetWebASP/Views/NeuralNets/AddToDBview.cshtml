@@ -1,0 +1,36 @@
+﻿@page
+@model NeuralNetWebASP.Models.GenerationParameters
+<h2>New element</h2>
+<form method="post" id="myForm">
+	@try{
+		@for (int i = 0; i < Model.inputs_count; i++)
+		{
+			<label>Input @i + 1:</label>
+			<input type="number" name="input_@i" />
+			<br />
+		}
+		@for (int i = 0; i < Model.outputs_count; i++)
+		{
+			<label>Output @i + 1:</label>
+			<input type="number" name="output_@i" onclick="submit()" />
+			<br />
+		}
+	}
+	catch(Exception ex)
+	{
+		<p>Error: @ex.Message</p>
+	}
+	<input type="button" />
+</form>
+<script>
+	function submit() {
+		/*var formdata = new FormData(document.getElementById("myForm"));
+		fetch("api/NeuralNets/AddToDB", {
+			method: "POST",
+			body: formdata
+		})
+			.then(response => response.json())
+			.then(data => { console.log(data); })
+			.catch(error => { console.log(`Error: ${error}`) });*/
+	}
+</script>

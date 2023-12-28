@@ -4,3 +4,12 @@
 #AddElementToDatabase {
     border: 3px solid black;
 }
+.form_half {
+    width: 45%;
+    display: inline-block;
+    border: 2px solid black;
+    margin: 20px;
+    padding: 20px;
+    height: 100%;
+    vertical-align: top;
+}
