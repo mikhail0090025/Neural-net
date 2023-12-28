@@ -3,6 +3,60 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1>Neural net manager</h1>
+    <div class="display-5 new-NN">
+        <form action="api/neuralnets/newgeneration" method="post" id="CreateNNform">
+            <p>Inputs count: </p> <input type="number" name="inputs_count" value="4"/><br />
+            <p>Outputs count: </p> <input type="number" name="outputs_count" value="2"/><br />
+            <p>Hidden layers count: </p> <input type="number" name="hidden_layers_count" value="4"/><br />
+            <p>Neurals in hidden layer count: </p> <input type="number" name="neurals_in_hidden_layer_count" value="5"/><br />
+            <p>Generation size: </p> <input type="number" name="gen_size" value="50"/><br />
+            <p>Learning factor: </p> <input type="number" name="learning_factor" value="100"/><br />
+            <p>Inputs round: </p>
+            <select name="inp_round">
+                <option value="DontRound">Don't round</option>
+                <option value="Tanh" selected>Tanh</option>
+                <option value="ZeroAndOne">Convert to Zero/One (Opened/Closed)</option>
+            </select>
+            <p>Neurals round: </p>
+            <select name="neu_round">
+                <option value="DontRound">Don't round</option>
+                <option value="Tanh">Tanh</option>
+                <option value="ZeroAndOne" selected>Convert to Zero/One (Opened/Closed)</option>
+            </select>
+            <p>Outputs round: </p>
+            <select name="out_round">
+                <option value="DontRound" selected>Don't round</option>
+                <option value="Tanh">Tanh</option>
+                <option value="ZeroAndOne">Convert to Zero/One (Opened/Closed)</option>
+            </select>
+            <input type="submit" />
+        </form>
+    </div>
+@*     <button id="addElementButton" onclick="fetch(`api/neuralnets/getaddingtodbview`, {method: 'GET'}).then(response=>
+        response.text()).then(data => {document.getElementById('AddElementToDatabase').innerHTML = data;}).catch(error => {alert(error)})">Add new element to database
+    </button>
+ *@  
+    <button id="addElementButton" onclick="ShowViewNewElementToDB()">Add new element to database</button>
+    <div id="AddElementToDatabase"></div>
+    <script>
+        document.getElementById("CreateNNform").addEventListener("submit", function (event) {
+            event.preventDefault();
+        });
+        function ShowViewNewElementToDB() {
+            var xhr = new XMLHttpRequest();
+            //xhr.open('GET', 'api/neuralnets/getaddingtodbview', true);
+            xhr.open('GET', 'api/NeuralNets/GetAddingToDBview', true);
+            //xhr.open('GET', 'api/NeuralNetsController/GetAddingToDBview', true); Error 404
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("AddElementToDatabase").innerHTML = xhr.responseText;
+                }
+                else {
+                    alert(`Error: ${xhr.status}`);
+                }
+            }
+            xhr.send();
+        }
+    </script>
 </div>
