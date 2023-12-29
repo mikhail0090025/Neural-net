@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "iPmlJAhLfVFQAHeIpDDp6/n1pe5lkU3vjVnDCmPMo5U=",
+  "Hash": "HEZsl85Ahhw8oQcA9VrKbqM/YJSg8TfDdfQCoOB9ji0=",
   "Source": "NeuralNetWebASP",
   "BasePath": "_content/NeuralNetWebASP",
   "Mode": "Default",
@@ -100,6 +100,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "D:\\misha\\github\\Neural-net\\NeuralNetWebASP\\wwwroot\\js\\MainPageScripts.js",
+      "SourceId": "NeuralNetWebASP",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\misha\\github\\Neural-net\\NeuralNetWebASP\\wwwroot\\",
+      "BasePath": "_content/NeuralNetWebASP",
+      "RelativePath": "js/MainPageScripts.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\MainPageScripts.js"
     },
     {
       "Identity": "D:\\misha\\github\\Neural-net\\NeuralNetWebASP\\wwwroot\\js\\site.js",

@@ -11,10 +11,12 @@ namespace NeuralNetWebASP.Controllers
         static Generation Generation { get; set; }
         static LearningDatabase LearningDatabase { get; set; }
         static GenerationData GenerationData { get; set; }
+        static bool IsLearning { get; set; }
         ILogger<NeuralNetsController> Logger { get; set; }
         public NeuralNetsController(ILogger<NeuralNetsController> _logger)
         {
             Logger = _logger;
+            IsLearning = false;
         }
         public IActionResult Index()
         {
@@ -148,7 +150,24 @@ namespace NeuralNetWebASP.Controllers
         {
             return Json(GenerationData);
         }
-	}
+        [HttpPost("start_learning")]
+        public async Task<IActionResult> StartLearning()
+        {
+            IsLearning = true;
+            while (IsLearning)
+            {
+                await Generation.PassOneGenerationAsync();
+                Logger.LogInformation("Iteration passed!");
+            }
+            return Ok("Learning step is finished");
+        }
+        [HttpPost("stop_learning")]
+        public IActionResult StopLearning()
+        {
+            IsLearning = false;
+            return Ok("Learning is stopped");
+        }
+    }
 }
 public class DataDB
 {
