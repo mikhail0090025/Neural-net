@@ -93,7 +93,7 @@ namespace NeuralNetWebASP.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            GenerationData = new GenerationData(LearningDatabase.Size, Generation.GenerationsPassed, Generation.CurrentError, Generation.ErrorChange);
+            GenerationData = new GenerationData(LearningDatabase.Size, Generation.GenerationsPassed, Generation.CurrentError, Generation.ErrorChange, Generation.LearningFactor);
             return Json(GenerationData);
         }
         [HttpPost("passseveralgenerations")]
@@ -115,7 +115,7 @@ namespace NeuralNetWebASP.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            GenerationData = new GenerationData(LearningDatabase.Size, Generation.GenerationsPassed, Generation.CurrentError, current_error - Generation.CurrentError);
+            GenerationData = new GenerationData(LearningDatabase.Size, Generation.GenerationsPassed, Generation.CurrentError, current_error - Generation.CurrentError, Generation.LearningFactor);
             return Json(GenerationData);
         }
         [HttpGet("generationisnull")]
@@ -123,11 +123,31 @@ namespace NeuralNetWebASP.Controllers
         {
             return Json(new {isnull = Generation == null});
         }
-        //[HttpGet("getdata")]
-        //public IActionResult GetDataAboutLearning()
-        //{
-
-        //}
+        [HttpPost("changelearningfactor")]
+        public IActionResult ChangeLearningFactor([FromBody] bool increase)
+        {
+            try
+            {
+                if (increase)
+                {
+                    Generation.IncreaseLearningFactor();
+                }
+                else
+                {
+                    Generation.ReduceLearningFactor();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error while changing learning factor: {ex.Message}");
+            }
+            return Ok($"Learning factor is changed to {Generation.LearningFactor}");
+        }
+        [HttpGet("gendata")]
+        public IActionResult GenData()
+        {
+            return Json(GenerationData);
+        }
 	}
 }
 public class DataDB

@@ -1,7 +1,7 @@
 ﻿.new-NN {
     border: 3px solid black;
     display: inline-block;
-    width: 80%;
+    width: 60%;
 }
 #AddElementToDatabase {
     border: 3px solid black;
@@ -27,14 +27,6 @@
     margin: 20px;
     padding: 20px;
     width: 30%;
-}
-.base_data {
-    display: inline-block;
-    vertical-align: top;
-    background: #FEFE99;
-    border: 2px solid black;
-    margin: 20px;
-    padding: 20px;
 }
 body {
     font-family: Consolas;
