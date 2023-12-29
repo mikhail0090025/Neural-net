@@ -38,3 +38,6 @@ button, input, label, p {
     font-size: 20px;
     font-weight: bold;
 }
+#ErrorField{
+    color: red;
+}

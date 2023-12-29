@@ -3,6 +3,8 @@ var SeveralGenerationsPass = document.getElementById("SeveralGenerationsPass");
 var addElementButton = document.getElementById("addElementButton");
 var LearnUntillStop = document.getElementById("LearnUntillStop");
 var StopLearningButton = document.getElementById("StopLearningButton");
+var ErrorField = document.getElementById("ErrorField");
+var TestNNbutton = document.getElementById("TestNNbutton");
 // Hide form id generation exists
 function Init() {
     fetch(`api/neuralnets/generationisnull`)
@@ -25,24 +27,11 @@ SeveralGenerationsPass.onclick = function () {
             RefreshBaseData();
             LearnButtonsShow(true);
         })
-        .catch(error => { alert(error); });
-}
-// Shows window with fields that user uses to adding new examples to learning database of neural net
-addElementButton.onclick = function () {
-    fetch(`api/neuralnets/getaddingtodbview`)
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("AddElementToDatabase").innerHTML = data;
-            SetFormAddToDB();
-        })
-        .catch(error => {
-            document.getElementById("AddElementToDatabase").innerHTML = `<p style='color: red;'>Error: ${error}</p>`;
-            alert("Error: " + error);
-        });
+        .catch(error => { ShowError(error); });
 }
 // Adds event listener to form, when it shows to user
 function SetFormAddToDB() {
-    document.getElementById('myForm').addEventListener('submit', function (event) {
+    document.getElementById('NewElementForm').addEventListener('submit', function (event) {
         event.preventDefault();
         var inputs = [];
         var outputs = [];
@@ -68,8 +57,24 @@ function SetFormAddToDB() {
             .then(data => {
                 document.getElementById("AddingToDBresult").innerHTML = data;
             })
-            .catch(error => { console.log(error); });
+            .catch(error => { ShowError(error); });
     });
+}
+TestNNbutton.onclick = function () {
+
+}
+// Shows window with fields that user uses to adding new examples to learning database of neural net
+addElementButton.onclick = function () {
+    fetch(`api/neuralnets/getaddingtodbview`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("AddElementToDatabase").innerHTML = data;
+            SetFormAddToDB();
+        })
+        .catch(error => {
+            document.getElementById("AddElementToDatabase").innerHTML = `<p style='color: red;'>Error: ${error}</p>`;
+            ShowError(error);
+        });
 }
 PassOneGenerationBTN.onclick = function () {
     LearnButtonsShow(false);
@@ -79,7 +84,7 @@ PassOneGenerationBTN.onclick = function () {
             RefreshBaseData();
             LearnButtonsShow(true);
         })
-        .catch(error => { console.log(error); });
+        .catch(error => { ShowError(error); });
 }
 function ChangeLF(increase) {
     fetch(`api/neuralnets/changelearningfactor`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(increase) })
@@ -89,22 +94,22 @@ function ChangeLF(increase) {
             fetch(`api/neuralnets/gendata`)
                 .then(response => response.json())
                 .then(data => { RefreshBaseData(); })
-                .catch(error => { console.log(error); });
+                .catch(error => { ShowError(error); });
         })
-        .catch(error => { console.log(error); });
+        .catch(error => { ShowError(error); });
 }
 function StartLearning() {
     LearnButtonsShow(false);
     fetch(`api/neuralnets/start_learning`, { method: 'POST', headers: { 'Content-type': 'text/plain' } })
         .then(response => response.text())
         .then(data => { console.log(data); })
-        .catch(error => { console.log(error); });
+        .catch(error => { ShowError(error); });
 }
 function StopLearning() {
     fetch(`api/neuralnets/stop_learning`, { method: 'POST', headers: { 'Content-type': 'text/plain' } })
         .then(response => response.text())
-        .then(data => { console.log(data); })
-        .catch(error => { console.log(error); });
+        .then(data => { RefreshBaseData(); })
+        .catch(error => { ShowError(error); });
     LearnButtonsShow(true);
 }
 function FillByRandomNumbers() {
@@ -126,13 +131,16 @@ function RefreshBaseData() {
     fetch(`api/neuralnets/gendata`)
         .then(response => response.json())
         .then(data => {
-            document.getElementById("BaseData").innerHTML = `Database size: ${data.databaseSize}<br>Generations passed: ${data.generationsPassed}<br>Current error: ${data.currentError}<br>Change error: ${data.changeError}<br>Learning factor: ${data.learningFactor}`;
+            document.getElementById("BaseData").innerHTML = `Database size: ${data.databaseSize}<br>Generations passed: ${data.generationsPassed}<br>Current error: ${data.currentError}<br>Error decrease: ${data.changeError}<br>Learning factor: ${data.learningFactor}`;
             console.log(data);
         })
-        .catch(error => { console.log(error); });
+        .catch(error => { ShowError(error); });
 }
 function LearnButtonsShow(enabled) {
     PassOneGenerationBTN.disabled = !enabled;
     SeveralGenerationsPass.disabled = !enabled;
     LearnUntillStop.disabled = !enabled;
+}
+function ShowError(error) {
+    ErrorField.innerHTML = "Error: " + error;
 }

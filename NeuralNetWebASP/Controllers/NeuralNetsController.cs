@@ -150,9 +150,11 @@ namespace NeuralNetWebASP.Controllers
         {
             return Json(GenerationData);
         }
+        static double cur_error;
         [HttpPost("start_learning")]
         public async Task<IActionResult> StartLearning()
         {
+            cur_error = Generation.CurrentError;
             IsLearning = true;
             while (IsLearning)
             {
@@ -165,7 +167,13 @@ namespace NeuralNetWebASP.Controllers
         public IActionResult StopLearning()
         {
             IsLearning = false;
+            GenerationData = new GenerationData(LearningDatabase.Size, Generation.GenerationsPassed, Generation.CurrentError, cur_error - Generation.CurrentError, Generation.LearningFactor);
             return Ok("Learning is stopped");
+        }
+        [HttpGet("get_view_with_test_nn")]
+        public IActionResult ViewWithTestNN()
+        {
+
         }
     }
 }
