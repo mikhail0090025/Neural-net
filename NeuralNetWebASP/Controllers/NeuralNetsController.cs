@@ -32,9 +32,9 @@ namespace NeuralNetWebASP.Controllers
 			}
             catch(Exception ex)
             {
-                return Json(new { text = $"Error: {ex.Message}"});
+                return BadRequest($"Error: {ex.Message}");
             }
-            return Json(new { text = $"Generation was created!" });
+            return Ok("Generation was created!");
         }
         [HttpPost("addtodb")]
         public IActionResult AddElementToDB([FromBody] DataDB data)
