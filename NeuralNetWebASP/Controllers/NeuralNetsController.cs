@@ -10,13 +10,11 @@ namespace NeuralNetWebASP.Controllers
     {
         static Generation Generation { get; set; }
         static LearningDatabase LearningDatabase { get; set; }
+        static GenerationData GenerationData { get; set; }
         ILogger<NeuralNetsController> Logger { get; set; }
         public NeuralNetsController(ILogger<NeuralNetsController> _logger)
         {
             Logger = _logger;
-            //Generation = new Generation(5, 5, 5, 5, 30, RoundType.DontRound, RoundType.ZeroAndOne, RoundType.Tanh, 0.0001);
-            //LearningDatabase = new LearningDatabase(5, 5);
-            //Generation.SetDatabase(LearningDatabase);
         }
         public IActionResult Index()
         {
@@ -25,8 +23,6 @@ namespace NeuralNetWebASP.Controllers
         [HttpPost("newgeneration")]
         public IActionResult CreateNewGeneration([FromForm] GenerationParameters parameters)
         {
-            Logger.LogInformation(Json(parameters).ToString());
-            Logger.LogInformation("Creating new generation started!");
 			try
 			{
                 parameters.learning_factor = Math.Pow(parameters.learning_factor, -1);
@@ -38,7 +34,6 @@ namespace NeuralNetWebASP.Controllers
             {
                 return Json(new { text = $"Error: {ex.Message}"});
             }
-            Logger.LogInformation("End of creating generation");
             return Json(new { text = $"Generation was created!" });
         }
         [HttpPost("addtodb")]
@@ -52,7 +47,7 @@ namespace NeuralNetWebASP.Controllers
             {
                 return BadRequest($"<span style='color: red;'>Error: {ex.Message}</span>");
             }
-            return Json("<span style='color: green;'>Example was successfully added!</span>");
+            return Ok("<span style='color: green;'>Example was successfully added!</span>");
         }
         private GenerationParameters GenerationParameters()
         {
@@ -72,11 +67,6 @@ namespace NeuralNetWebASP.Controllers
 			parameters.learning_factor = (int)Generation.LearningFactor;
             return parameters;
 		}
-		[HttpGet("GetData")]
-        public IActionResult GetGenerationData()
-        {
-            return Json(GenerationParameters());
-        }
         [HttpGet("GetAddingToDBview")]
         public IActionResult GetAddingToDBview()
         {
@@ -88,12 +78,56 @@ namespace NeuralNetWebASP.Controllers
             Logger.LogInformation($"Parameters are null: {parameters == null}");
             return View("AddToDBView", parameters);
         }
-        [HttpGet("generationinjson")]
-        public IActionResult GenerationInJson()
+        [HttpPost("passgeneration")]
+        public async Task<IActionResult> PassOneGeneration()
         {
-            //return Json(Generation);
-            return Json(new { gen = Generation });
+            if (Generation == null)
+            {
+                return BadRequest("Generation was not created!");
+            }
+            try
+            {
+                await Generation.PassOneGenerationAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            GenerationData = new GenerationData(LearningDatabase.Size, Generation.GenerationsPassed, Generation.CurrentError, Generation.ErrorChange);
+            return Json(GenerationData);
         }
+        [HttpPost("passseveralgenerations")]
+        public async Task<IActionResult> PassSeveralGenerations([FromBody] int amount)
+        {
+            var current_error = Generation.CurrentError;
+            if (Generation == null)
+            {
+                return BadRequest("Generation was not created!");
+            }
+            try
+            {
+                for (int i = 0; i < amount; i++)
+                {
+                    await Generation.PassOneGenerationAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            GenerationData = new GenerationData(LearningDatabase.Size, Generation.GenerationsPassed, Generation.CurrentError, current_error - Generation.CurrentError);
+            return Json(GenerationData);
+        }
+        [HttpGet("generationisnull")]
+        public IActionResult GenerationIsNull()
+        {
+            return Json(new {isnull = Generation == null});
+        }
+        //[HttpGet("getdata")]
+        //public IActionResult GetDataAboutLearning()
+        //{
+
+        //}
 	}
 }
 public class DataDB

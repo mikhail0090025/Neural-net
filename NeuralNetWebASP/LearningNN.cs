@@ -120,7 +120,7 @@ namespace Neural_net
             currentError = Errors[index];
             return generation[index];
         }
-        public async Task PassOneGeneration()
+        public async Task PassOneGenerationAsync()
         {
             var cur_error = currentError;
             var best_nn = await BestNN();
@@ -158,8 +158,29 @@ namespace Neural_net
         {
             if (test_inputs.Count != inputsCount) throw new Exception("Given test inputs are invalid for this database");
             if (exp_outputs.Count != outputsCount) throw new Exception("Given expected outputs are invalid for this database");
+            foreach (var item in testInputs)
+            {
+                if(item.ListsAreSame(test_inputs))
+                {
+                    throw new Exception("Example with the same inputs are already in learning database");
+                    return;
+                }
+            }
             testInputs.Add(test_inputs);
             expectedOutputs.Add(exp_outputs);
+        }
+    }
+    public static class ExtensionClass
+    {
+        public static bool ListsAreSame<T>(this List<T> list1, List<T> list2)
+        {
+            if(list1.Count != list2.Count) return false;
+            for (int i = 0; i < list1.Count; i++)
+            {
+                EqualityComparer<T> comparer = EqualityComparer<T>.Default;
+                if (!comparer.Equals(list1[i], list2[i])) return false;
+            }
+            return true;
         }
     }
 }

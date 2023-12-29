@@ -1,8 +1,12 @@
-﻿.new-NN{
+﻿.new-NN {
     border: 3px solid black;
+    display: inline-block;
+    width: 50%;
 }
 #AddElementToDatabase {
     border: 3px solid black;
+    width: 60%;
+    display: inline-block;
 }
 .form_half {
     width: 45%;
@@ -12,7 +16,33 @@
     padding: 20px;
     height: 100%;
     vertical-align: top;
+    background: #FEFE99;
+    font-size: 20px;
 }
-div{
+.learning_block {
+    display: inline-block;
+    vertical-align: top;
+    background: #FEFE99;
+    border: 2px solid black;
     margin: 20px;
+    padding: 20px;
+    width: 30%;
+}
+.base_data {
+    display: inline-block;
+    vertical-align: top;
+    background: #FEFE99;
+    border: 2px solid black;
+    margin: 20px;
+    padding: 20px;
+}
+body {
+    font-family: Consolas;
+}
+div {
+    margin: 20px;
+}
+button, input, label, p {
+    font-size: 20px;
+    font-weight: bold;
 }
