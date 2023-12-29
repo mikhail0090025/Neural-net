@@ -35,6 +35,7 @@
                 </select>
             </div>
             <input type="submit" />
+            <br />
         </form>
     </div>
 @*     <button id="addElementButton" onclick="fetch(`api/neuralnets/getaddingtodbview`, {method: 'GET'}).then(response=>
@@ -45,34 +46,6 @@
     <button onclick="GetGenerationJSON()">Get generation in JSON</button>
     <button onclick="GetDataInJSON()">Get data about generation (JSON)</button>
     <div id="AddElementToDatabase"></div>
-    <script>
-        function GetGenerationJSON() {
-            fetch(`api/neuralnets/generationinjson`)
-                .then(response => response.text())
-                .then(data => { alert(data);})
-                .catch(error => { alert(`Error: ${error}`) });
-        }
-        /*document.getElementById("CreateNNform").addEventListener("submit", function (event) {
-            event.preventDefault();
-        });*/
-        function ShowViewNewElementToDB() {
-            fetch(`api/neuralnets/getaddingtodbview`)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("AddElementToDatabase").innerHTML = data;
-                })
-                .catch(error => {
-                    document.getElementById("AddElementToDatabase").innerHTML = `<p style='color: red;'>Error: ${error}</p>`;
-                    alert("Error: " + error);
-                });
-        }
-        function GetDataInJSON() {
-            fetch(`api/neuralnets/getdata`)
-            .then(response => response.text())
-                .then(data => { console.log(data); alert(data); })
-                .catch(error => { alert(error); })
-        }
-    </script>
 </div>
 <style>
     .form_half {
@@ -88,3 +61,71 @@
         font-size: 20px;
     }
 </style>
+<script type="text/javascript">
+    function GetGenerationJSON() {
+        fetch(`api/neuralnets/generationinjson`)
+            .then(response => response.text())
+            .then(data => { alert(data); })
+            .catch(error => { alert(`Error: ${error}`) });
+    }
+    /*document.getElementById("CreateNNform").addEventListener("submit", function (event) {
+        event.preventDefault();
+    });*/
+    // Shows window with fields that user uses to adding new examples to learning database of neural net
+    function ShowViewNewElementToDB() {
+        fetch(`api/neuralnets/getaddingtodbview`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("AddElementToDatabase").innerHTML = data;
+                SetFormAddToDB();
+            })
+            .catch(error => {
+                document.getElementById("AddElementToDatabase").innerHTML = `<p style='color: red;'>Error: ${error}</p>`;
+                alert("Error: " + error);
+            });
+    }
+    function GetDataInJSON() {
+        fetch(`api/neuralnets/getdata`)
+            .then(response => response.text())
+            .then(data => { console.log(data); alert(data); })
+            .catch(error => { alert(error); })
+    }
+    // Adds event listener to form, when it shows to user
+    function SetFormAddToDB() {
+        document.getElementById('myForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            console.log("Form submitted");
+            var inputs = [];
+            var outputs = [];
+            var num = 0;
+            while (document.getElementById(`input_${num}`) != undefined) {
+                var value = document.getElementById(`input_${num}`).value;
+                inputs.push(value);
+                num++;
+            }
+            console.log(`input_${num} is null`);
+            num = 0;
+            while (document.getElementById(`output_${num}`) != undefined) {
+                var value = document.getElementById(`output_${num}`).value;
+                outputs.push(value);
+                num++;
+            }
+            console.log(`output_${num} is null`);
+            console.log("Inputs: ", inputs);
+            console.log("Outputs: ", outputs);
+            //alert("Inputs: " + inputs.join(", ") + "\nOutputs: " + outputs.join(", "));
+            // sending request
+            fetch(`api/neuralnets/addtodb`, {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+                body: JSON.stringify({ LearningInputs: inputs, ExpectedOutputs: outputs })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("AddingToDBresult").innerHTML = data;
+                    alert(data);
+                })
+                .catch(error => { alert(error); });
+        });
+    }
+</script>

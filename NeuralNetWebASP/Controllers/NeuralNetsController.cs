@@ -41,11 +41,18 @@ namespace NeuralNetWebASP.Controllers
             Logger.LogInformation("End of creating generation");
             return Json(new { text = $"Generation was created!" });
         }
-        [HttpPost("AddToDB")]
-        public IActionResult AddElementToDB([FromBody] object data)
+        [HttpPost("addtodb")]
+        public IActionResult AddElementToDB([FromBody] DataDB data)
         {
-            dynamic gotten_data = data;
-            return Json(gotten_data);
+            try
+            {
+                LearningDatabase.AddItem(data.LearningInputs, data.ExpectedOutputs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"<span style='color: red;'>Error: {ex.Message}</span>");
+            }
+            return Json("<span style='color: green;'>Example was successfully added!</span>");
         }
         private GenerationParameters GenerationParameters()
         {
@@ -88,4 +95,9 @@ namespace NeuralNetWebASP.Controllers
             return Json(new { gen = Generation });
         }
 	}
+}
+public class DataDB
+{
+    public List<double> LearningInputs { get; set; }
+    public List<double> ExpectedOutputs { get; set; }
 }

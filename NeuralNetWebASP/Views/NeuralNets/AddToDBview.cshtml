@@ -7,46 +7,38 @@
 	@{
 		if (Model == null)
 		{
-			<p style="color: red;">Model is null</p>
+				<p style="color: red;">Model is null</p>
 			return;
 		}
 		try
 		{
-			<div class="form_half">
-			<center><h2>Inputs</h2></center>
+				<div class="form_half">
+				<center><h2>Inputs</h2></center>
 				@for (int i = 0; i < Model.inputs_count; i++)
 				{
 					<label>Input @(i + 1):</label>
-					<input type="number" name="input_@i" />
+					<input type="number" id="input_@i" value="0" step="any"/>
 					<br />
 				}
-			</div>
-			<div class="form_half">
-			<center><h2>Outputs</h2></center>
-				@for (int i = 0; i < Model.outputs_count; i++)
+				</div>
+				<div class="form_half">
+				<center><h2>Outputs</h2></center>
+					@for (int i = 0; i < Model.outputs_count; i++)
 				{
 					<label>Output @(i + 1):</label>
-					<input type="number" name="output_@i" />
+					<input type="number" id="output_@i" value="0" step="any"/>
 					<br />
 				}
-			</div>
+				</div>
 		}
 		catch (Exception ex)
 		{
-			<p>Error: @ex.Message</p>
+				<p>Error: @ex.Message</p>
 		}
 	}
-	<center><input type="button" onclick="submit()" value="Add" /></center>
+	<center><input type="submit" value="Add"/></center>
+	<b id="AddingToDBresult"></b>
 </form>
 <script>
-	function submit() {
-		/*var formdata = new FormData(document.getElementById("myForm"));
-		fetch("api/NeuralNets/AddToDB", {
-			method: "POST",
-			body: formdata
-		})
-			.then(response => response.json())
-			.then(data => { console.log(data); })
-			.catch(error => { console.log(`Error: ${error}`) });*/
-	}
+	
 </script>
